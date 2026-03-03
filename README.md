@@ -151,46 +151,6 @@ leg\source\leg\leg\tasks\direct\leg\agents\skrl_ppo_cfg.yaml
 leg\source\leg\leg\tasks\direct\leg\__init__.py
 leg\scripts\rsl_rl\train.py
 
-- 주요 보상
-```bash
-
-base_height_target = 0.5
-min_base_height = 0.20
-max_base_pitch = 2.5
-max_base_roll = 2.5
-
-# reward scales
-rew_scale_alive = 0.2       # 너무 크지 않게, 그래도 살아있으면 + 보상
-rew_scale_terminated = -1.0     # 넘어지면 꽤 큰 음수
-rew_scale_forward_vel = 0.0     # 앞으로 가면 많이 보상
-rew_scale_upright = 2.0         # 자세 잘 유지하면 꽤 보상
-
-# penalties는 일단 아주 약하게 시작
-rew_scale_joint_vel = -1e-4
-rew_scale_action_rate = -1e-4
-rew_scale_energy = -0.0005          # 처음엔 꺼버려도 됨
-
-action_scale = 1.0
-torque_limit = 3.0
-
-
-rew_scale_leg_interference = -0.2   # 마이너스 보상(패널티)
-leg_interference_force_threshold = 200.0  # N 단위(대충 시작값)
-
-scene.left_leg_contact = ContactSensorCfg(
-    prim_path="/World/envs/env_.*/legs/ll(4|5|6)_.*",
-    filter_prim_paths_expr=["/World/envs/env_.*/legs/rl(4|5|6)_.*"],
-    update_period=0.0,
-    history_length=1,
-)
-scene.right_leg_contact = ContactSensorCfg(
-    prim_path="/World/envs/env_.*/legs/rl(4|5|6)_.*",
-    filter_prim_paths_expr=["/World/envs/env_.*/legs/ll(4|5|6)_.*"],
-    update_period=0.0,
-    history_length=1,
-)
-
-```
 
 
 - 학습 실행
@@ -224,8 +184,12 @@ python scripts/rsl_rl/train.py --task=Template-Leg-Direct-v0 --num_envs=1000 --m
 
 - 추론
 ```bash
-python scripts/rsl_rl/play.py --task Template-Leg-Direct-v0 --num_envs 1 --checkpoint logs/rsl_rl/leg/2025-12-15-22-00-00/model_39400.pt
+python scripts/rsl_rl/play.py --task Template-Leg-Direct-v0 --num_envs 20 --checkpoint logs/rsl_rl/leg/model_99999.pt
 ```
+
+https://github.com/user-attachments/assets/80280dde-8090-4f91-8ec1-0bcc60204a35
+
+
 
 
 # simul ros 통신 구현
