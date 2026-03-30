@@ -92,8 +92,8 @@ class LegEnvCfg(DirectRLEnvCfg):
     foot_th_margin = 100.0 # 200.0            # ensure on >= off + margin
 
     # fallback 초기값(학습 초반에 quantile이 0일 수도 있어서)
-    foot_contact_force_th_on_init  = 4400.0 # 1400.0 # 2200.0 
-    foot_contact_force_th_off_init = 3500.0 # 1000.0 # 2000.0
+    foot_contact_force_th_on_init  = 1400.0 # 2200.0 
+    foot_contact_force_th_off_init = 1000.0 # 2000.0
 
     # ---- Foot contact: ONLY ground/terrain ----
     GROUND_FILTER = ["/World/GroundPlane/GroundPlane/CollisionPlane"]
