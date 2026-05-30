@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: opencr_rcm_control
+    relative_path: urdf/simple_robot.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/legs.srdf
+  CONFIG:
+    author_name: dd
+    author_email: dd@dd.dd
+    generated_timestamp: 1780121976

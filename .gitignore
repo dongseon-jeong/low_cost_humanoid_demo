@@ -1,3 +1,7 @@
 leg/logs/*
 leg/outputs/*
 leg/.vscode
+catkin_ws/build/
+catkin_ws/devel/
+catkin_ws/src/CMakeLists.txt
+catkin_ws/.catkin_workspace

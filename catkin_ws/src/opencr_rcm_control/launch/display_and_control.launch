@@ -1,0 +1,10 @@
+<launch>
+  <param name="robot_description" textfile="$(find opencr_rcm_control)/urdf/simple_robot.urdf" />
+
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+
+  <node name="ros_serial_bridge" pkg="opencr_rcm_control" type="ros_serial_bridge.py" output="screen" />
+</launch>

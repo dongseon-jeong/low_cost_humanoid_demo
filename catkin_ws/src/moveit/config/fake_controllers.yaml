@@ -1,0 +1,24 @@
+controller_list:
+  - name: fake_lleg_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - lbase_joint
+      - ll1_joint
+      - ll2_joint
+      - ll3_joint
+      - ll4_joint
+      - ll5_joint
+  - name: fake_rleg_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - rbase_joint
+      - rl1_joint
+      - rl2_joint
+      - rl3_joint
+      - rl4_joint
+      - rl5_joint
+initial:  # Define initial robot poses per group
+  - group: lleg
+    pose: 11
+  - group: rleg
+    pose: rr
