@@ -316,14 +316,14 @@ rosrun opencr_rcm_control ros_serial_bridge.py
 ```
 
 ## locomotion 구현
-강화학습모델 realworld 적용  
+
 +zmp  
+지면과 발바닥 사이에 마찰력이 없어서 발바닥에 고무 부착 필요
 
 https://github.com/user-attachments/assets/6223d0d4-1970-4561-afc3-cd891884fd33  
 
 
-
-
+강화학습모델 realworld 적용  
 navigation  
 
 
@@ -331,7 +331,7 @@ navigation
 # 2.상체
 
 ## 3d 프린팅 부품 설계
-
+![이미지](./image/20260607203357.png)
 
 ## 3d 프린팅 조립
 
@@ -359,8 +359,8 @@ roslaunch moveit_setup_assistant setup_assistant.launch
 lerobot dataset 변환
 
 ## 합성 데이터 셋 생성
-isaacsim augmentation  
-cosmos 모델로 생성
+isaacsim augmentation
+cosmos transfer 모델로 생성
 
 ## vla manipulation 학습
 lerobot 학습

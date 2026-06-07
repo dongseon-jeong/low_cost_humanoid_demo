@@ -1,9 +1,11 @@
 #include <Dynamixel2Arduino.h>
+#include <IMU.h>
 
 #define DXL_SERIAL   Serial3
 #define DEBUG_SERIAL Serial
 #define RPI_SERIAL   Serial   // 라즈베리파이 USB 시리얼 연결 (OpenCR은 Serial이 USB 가상 시리얼입니다)
 
+cIMU imu;
 const int DXL_DIR_PIN = 84;
 Dynamixel2Arduino dxl(DXL_SERIAL, DXL_DIR_PIN);
 
@@ -19,15 +21,20 @@ const uint8_t IDS[12] = {
 
 int32_t DYNAMIC_CENTER_POS[12] = {0, };
 
+
 const float URDF_MIN_RAD[12] = {
-  0.0,   0.0,   -1.57,  0.0,  -0.43, -1.04, // 왼발 (1번: -1.57)
-  0.0,   0.0,   -0.43, -1.39, -1.57, -1.57  // 오른발 (7번: 0.0)
+  -1.57,   -1.57,   -1.57,    0.0,   -0.43, -1.04, // 왼발 (1번: -1.57)
+  0.0,     -0.43,   -0.43,   -1.39,  -1.57, -1.57  // 오른발 (7번: 0.0)
 };
 
 const float URDF_MAX_RAD[12] = {
-  1.57,   1.57,  0.43,  1.39,  1.57,  1.57,  // 왼발 (1번: 0.0)
-  1.57,   1.57,  1.57,  0.0,   0.43,  1.04   // 오른발 (7번: 1.57)
+  0.0,    0.43,     0.43,     1.39,   1.57,  1.57,  // 왼발 (1번: 0.0)
+  1.57,   1.57,     1.57,     0.0,    0.43,  1.04   // 오른발 (7번: 1.57)
 };
+
+
+
+
 
 const float RAD_TO_DXL_STEP = 651.74;
 
@@ -104,6 +111,8 @@ void setup()
     dxl.setGoalPosition(id, (uint32_t)DYNAMIC_CENTER_POS[i], UNIT_RAW);
     delay(20);
   }
+  imu.begin();
+  delay(100);
 }
 
 // void loop()
@@ -167,25 +176,14 @@ void setup()
 //       int32_t min_offset_limit = (int32_t)(URDF_MIN_RAD[idx] * RAD_TO_DXL_STEP);
 //       int32_t max_offset_limit = (int32_t)(URDF_MAX_RAD[idx] * RAD_TO_DXL_STEP);
 
-//       // 2. ★ [물리적 방향/한계 분기문 분리]
-//       if (targetID == 1 || targetID == 2) {
-//         offsetInput = -offsetInput; // 입력 부호 반전
+
+//       // if (targetID == 11|| targetID == 12) {
+//       //   offsetInput = -offsetInput; // 입력 부호 반전 (원하는 방향 전환)
         
-//         // 1, 2번은 원래 가드가 음수 영역이므로 장벽도 대칭 반전 필요
-//         int32_t temp = min_offset_limit;
-//         min_offset_limit = -max_offset_limit;
-//         max_offset_limit = -temp;
-        
-//         DEBUG_SERIAL.print(" [INFO] ID "); DEBUG_SERIAL.print(targetID);
-//         DEBUG_SERIAL.println(" Direction Inverted with Guard Flip.");
-//       } 
-//       else if (targetID == 9 || targetID == 10|| targetID == 11|| targetID == 12) {
-//         offsetInput = -offsetInput; // 입력 부호 반전 (원하는 방향 전환)
-        
-//         // ★ 9번은 이미 배열이 양수(0.0 ~ 1.57)로 완벽하므로 가드 장벽을 반전시키지 않고 그대로 유지합니다!
-//         DEBUG_SERIAL.print(" [INFO] ID 9 Direction Inverted -> Offset: ");
-//         DEBUG_SERIAL.println(offsetInput);
-//       }
+//       //   // ★ 9번은 이미 배열이 양수(0.0 ~ 1.57)로 완벽하므로 가드 장벽을 반전시키지 않고 그대로 유지합니다!
+//       //   DEBUG_SERIAL.print(" [INFO] ID 9 Direction Inverted -> Offset: ");
+//       //   DEBUG_SERIAL.println(offsetInput);
+//       // }
 
 //       // 3. URDF 오프셋 범위 내로 가드 클램핑 (이제 9번은 0 ~ 1023 가드를 정상 적용받습니다)
 //       if (offsetInput < min_offset_limit) {
@@ -269,15 +267,10 @@ void loop()
       int32_t max_offset_limit = (int32_t)(URDF_MAX_RAD[idx] * RAD_TO_DXL_STEP);
 
       // 물리적 방향/한계 분기문
-      if (targetID == 1 || targetID == 2) {
-        offsetInput = -offsetInput; 
-        int32_t temp = min_offset_limit;
-        min_offset_limit = -max_offset_limit;
-        max_offset_limit = -temp;
-      } 
-      else if (targetID == 9|| targetID == 10|| targetID == 11|| targetID == 12) {
+      if (targetID == 3|| targetID == 4|| targetID == 5|| targetID == 6||targetID == 9|| targetID == 10|| targetID == 11|| targetID == 12) {
         offsetInput = -offsetInput; 
       }
+
 
       // 가드 클램핑
       if (offsetInput < min_offset_limit) offsetInput = min_offset_limit;
@@ -289,4 +282,37 @@ void loop()
     // 라즈베리파이에게 명령을 잘 처리했다고 응답 전송 (파이썬 블로킹 방지용)
     RPI_SERIAL.println("ACK:OK");
   }
+
+  imu.update();
+  // 2. IMU 데이터 읽기 및 라즈베리파이로 송출 (추가할 부분)
+  // 50Hz~100Hz 주기로 보낼 수 있도록 타이머 처리
+  // float roll  = imu.rpy[0];  // Index 0 : Roll
+  // float pitch = imu.rpy[1];  // Index 1 : Pitch
+  // float yaw   = imu.rpy[2];  // Index 2 : Yaw
+  // // "IMU:롤값,피치값,요값" 형태로 한 줄씩 출력 (\n)
+  // Serial.print("IMU:");
+  // Serial.print(roll); Serial.print(",");
+  // Serial.print(pitch); Serial.print(",");
+  // Serial.println(yaw);
+
+  float raw_roll  = imu.rpy[0];
+  float raw_pitch = imu.rpy[1];
+  float raw_yaw   = imu.rpy[2];
+
+  // 시계방향 90도 회전 보정
+  float corrected_roll  = -raw_roll;
+  float corrected_pitch = -raw_pitch;
+  float corrected_yaw   =  raw_yaw;
+
+  // yaw 범위 정규화 (-180 ~ 180)
+  if (corrected_yaw < -180.0f) corrected_yaw += 360.0f;
+  if (corrected_yaw >  180.0f) corrected_yaw -= 360.0f;
+
+  Serial.print("IMU:");
+  Serial.print(corrected_roll);  Serial.print(",");
+  Serial.print(corrected_pitch); Serial.print(",");
+  Serial.println(corrected_yaw);
+
+  delay(10);
+  
 }
