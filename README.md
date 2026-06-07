@@ -318,6 +318,11 @@ rosrun opencr_rcm_control ros_serial_bridge.py
 ## locomotion 구현
 강화학습모델 realworld 적용  
 +zmp  
+https://github.com/user-attachments/assets/6223d0d4-1970-4561-afc3-cd891884fd33
+
+
+
+
 navigation  
 
 
