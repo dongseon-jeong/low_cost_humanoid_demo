@@ -1,6 +1,8 @@
 
 # 준비
 
+![이미지](./image/210311.png)
+
 - 로봇
 	- op3 leg + toddlerbot arm + rgb camera
 - 최종로봇목표
