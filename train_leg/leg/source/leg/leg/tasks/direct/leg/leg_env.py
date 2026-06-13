@@ -333,6 +333,15 @@ class LegEnv(DirectRLEnv):
         self.last_landing_is_left[:] = new_left
         self.last_landing_valid[:] = prev_valid | single_landing
 
+        # 다리사이 간격
+
+        lf_pos = bs[:, self._lf_body_id, 0:3]
+        rf_pos = bs[:, self._rf_body_id, 0:3]
+
+
+
+
+
         # -------------------------
         # Reward
         # -------------------------
@@ -370,6 +379,9 @@ class LegEnv(DirectRLEnv):
             float(self.cfg.base_height_target),
             self.reset_terminated,
             float(self.cfg.rew_heading_rate),
+            lf_pos,
+            rf_pos,
+            float(self.cfg.foot_target_width),
 
         )
 
@@ -813,6 +825,11 @@ def compute_rewards(
     reset_terminated: torch.Tensor,     # [N] bool/int
     rew_heading_rate:float,
 
+    lf_pos: torch.Tensor,
+    rf_pos: torch.Tensor,
+    foot_target_width:float,
+
+
 ) -> torch.Tensor:
 
     # Alive / termination
@@ -856,9 +873,9 @@ def compute_rewards(
     # stand_pen = torch.relu(v_eps - v_fwd)
     # rew_stand_pen = -2.5 * (stand_pen * stand_pen)
 
-    # (D) crab-walk / yaw 강 억제
-    rew_lat_pen = rew_lat_pen_rate * (v_lat * v_lat)        # ← 기존 -1.0 보다 강하게
-    rew_yaw_pen = rew_yaw_pen_rate  * (yaw_rate * yaw_rate)  # ← 기존 -0.1 보다 강하게
+    # # (D) crab-walk / yaw 강 억제
+    # rew_lat_pen = rew_lat_pen_rate * (v_lat * v_lat)        # ← 기존 -1.0 보다 강하게
+    # rew_yaw_pen = rew_yaw_pen_rate  * (yaw_rate * yaw_rate)  # ← 기존 -0.1 보다 강하게
 
     # Heading alignment to world -X
     target_dir = base_quat.new_zeros((N, 3))
@@ -883,13 +900,19 @@ def compute_rewards(
     rew_energy = rew_scale_energy * torch.sum(torch.abs(joint_torques * joint_vel), dim=1)
 
     # Leg interference penalty
-    excess = torch.clamp(leg_interf_max_force - leg_interference_force_threshold, min=0.0)
-    excess = torch.clamp(excess, max=200.0)
-    rew_leg_interf = rew_scale_leg_interference * (excess / 200.0)
+    # excess = torch.clamp(leg_interf_max_force - leg_interference_force_threshold, min=0.0)
+    # excess = torch.clamp(excess, max=200.0)
+    # rew_leg_interf = rew_scale_leg_interference * (excess / 200.0)
 
     # Alternation shaping
-    rew_alt = alternation_rew_rate * alt_good.to(torch.float32) \
-            + same_foot_pen_rate * alt_bad.to(torch.float32)
+    # rew_alt = alternation_rew_rate * alt_good.to(torch.float32) \
+    #         + same_foot_pen_rate * alt_bad.to(torch.float32)
+
+    foot_width = torch.abs(lf_pos[:, 1] - rf_pos[:, 1])
+
+    width_err = foot_width - foot_target_width
+
+    rew_foot_spacing = torch.exp(50.0 * width_err * width_err)
 
     total = (
         rew_alive
@@ -898,12 +921,13 @@ def compute_rewards(
         + rew_forward
         + rew_vel_track
         + rew_heading
-        + rew_leg_interf
+        # + rew_leg_interf
         + rew_joint_vel
         + rew_action_rate
         + rew_energy
-        + rew_alt
-        + rew_lat_pen
-        + rew_yaw_pen
+        # + rew_alt
+        # + rew_lat_pen
+        # + rew_yaw_pen
+        + rew_foot_spacing
     )
     return total

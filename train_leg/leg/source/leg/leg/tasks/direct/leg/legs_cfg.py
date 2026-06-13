@@ -55,8 +55,8 @@ LEGS_CFG = ArticulationCfg(
                 "ll5_joint",
                 "rl5_joint",
             ],
-            stiffness={".*": 300.0}, # 500.0
-            damping={".*": 20.0},
+            stiffness={".*": 5000.0}, # 500.0
+            damping={".*": 10.0},
             velocity_limit_sim={".*": 10.0},
         ),
     },

@@ -50,7 +50,7 @@ class LegEnvCfg(DirectRLEnvCfg):
     torque_limit = 8.0
 
     # 베이스 높이
-    base_height_target = 0.25
+    base_height_target = 0.2
     min_base_height = 0.10
     max_base_pitch = 1.0
     max_base_roll = 1.0
@@ -80,6 +80,9 @@ class LegEnvCfg(DirectRLEnvCfg):
     rew_yaw_pen_rate = 0 # -0.5 
 
     # 스텝용
+
+    foot_target_width = 0.06
+
     # ---- foot contact thresholds (hysteresis) ----
     foot_th_update_interval = 200     # steps
     foot_th_q_on = 0.70               # on = Q70
