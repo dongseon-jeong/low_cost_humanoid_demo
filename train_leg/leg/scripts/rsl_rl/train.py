@@ -161,15 +161,6 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     if isinstance(env.unwrapped, DirectMARLEnv):
         env = multi_agent_to_single_agent(env)
 
-
-    # ✅ 여기서 base env(=LegEnv) 잡기
-    base_env = env.unwrapped
-
-    # ✅ 학습에서는 threshold 업데이트 ON
-    base_env.enable_foot_th_update = True
-    base_env.freeze_foot_thresholds = False
-
-
     # save resume path before creating a new log_dir
     if agent_cfg.resume or agent_cfg.algorithm.class_name == "Distillation":
         resume_path = get_checkpoint_path(log_root_path, agent_cfg.load_run, agent_cfg.load_checkpoint)

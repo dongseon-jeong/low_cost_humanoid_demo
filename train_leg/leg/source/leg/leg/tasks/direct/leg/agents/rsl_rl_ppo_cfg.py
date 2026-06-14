@@ -12,7 +12,7 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
 class PPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 16
     max_iterations = 150
-    save_interval = 50
+    save_interval = 1000
     experiment_name = "leg"
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=0.5, #

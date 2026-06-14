@@ -77,8 +77,9 @@ import isaaclab_tasks  # noqa: F401
 from isaaclab_tasks.utils import get_checkpoint_path
 from isaaclab_tasks.utils.hydra import hydra_task_config
 
+BASE_PATH = os.environ.get("BASE_PATH")
 import sys
-sys.path.append("D:/making/dynamixel/leg/source/leg")
+sys.path.append(BASE_PATH+"/leg/source/leg")
 import leg.tasks  # noqa: F401
 
 

@@ -15,7 +15,7 @@ LEGS_CFG = ArticulationCfg(
     #    /World/envs/env_0/world/legs, /World/envs/env_1/world/legs, ...
     prim_path="/World/envs/env_.*/legs",   
     spawn=sim_utils.UsdFileCfg(
-        # 여긴 그대로 네 USD 파일 경로
+
         usd_path=BASE_PATH+"/leg_w.usd",
         activate_contact_sensors=True,   # 추가
         copy_from_source=True,   # 추가/수정
