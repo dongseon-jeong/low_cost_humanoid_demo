@@ -220,6 +220,7 @@ class LegEnv(DirectRLEnv):
             float(self.cfg.rew_scale_action_rate),
             float(self.cfg.rew_scale_energy),
             float(self.cfg.rew_vel_track_rate),
+            float(self.cfg.rew_fheight_rate),
 
             # robot state tensors
             base_quat,
@@ -372,6 +373,7 @@ def compute_rewards(
     rew_scale_action_rate: float,
     rew_scale_energy: float,
     rew_vel_track_rate: float,
+    rew_fheight_rate: float,
 
     # robot state
     base_quat: torch.Tensor,            # [N,4] (qw,qx,qy,qz)
@@ -467,7 +469,7 @@ def compute_rewards(
     rswing = torch.exp(-100.0*(rf_z-swing_z)**2)
     rmix = torch.clamp((rf_z-ground_z)/(swing_z-ground_z),0.0,1.0)
     rew_rf_height = (1.0-rmix)*rstance + rmix*rswing
-    rew_foot_height = (rew_lf_height +rew_rf_height)
+    rew_foot_height = rew_fheight_rate*(rew_lf_height +rew_rf_height)
 
     total = (
         rew_alive

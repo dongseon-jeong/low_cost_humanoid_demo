@@ -1,7 +1,8 @@
 
 # 준비
 
-![이미지](./image/210311.png)
+
+![이미지](./image/064224.png)
 
 - 로봇
 	- op3 leg + toddlerbot arm + rgb camera
@@ -27,6 +28,7 @@
 	- isaacsim/isaaclab
 	- fusion
 
+![이미지](./image/210311.png)
 
 # 4. 멀티 태스크 구현
 
