@@ -66,13 +66,13 @@ class LegEnvCfg(DirectRLEnvCfg):
     rew_scale_joint_vel = -1e-4
     rew_scale_action_rate = -1e-4
     rew_scale_energy = -0.0005          # 처음엔 꺼버려도 됨
-    rew_heading_rate = 15.0   # 5~20
+    rew_heading_rate = 5.0   # 5~20
 
     # 스텝용
     foot_target_width = 0.03
     ground_z = 0.01
     swing_z = 0.08
-    rew_fheight_rate = 5.0
+    rew_fheight_rate = 1.0
 
     # ---- 접촉 센서는 미사용
     GROUND_FILTER = ["/World/GroundPlane/GroundPlane/CollisionPlane"]

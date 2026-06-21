@@ -18,6 +18,7 @@ from isaaclab.sensors import ContactSensor  # <-- make sure your IsaacLab versio
 
 from .leg_env_cfg import LegEnvCfg
 
+from typing import Tuple
 
 class LegEnv(DirectRLEnv):
     cfg: LegEnvCfg
@@ -210,7 +211,20 @@ class LegEnv(DirectRLEnv):
         # -------------------------
         # Reward
         # -------------------------
-        total_reward = compute_rewards(
+        (
+            total_reward,
+            r_alive,
+            r_term,
+            r_upright,
+            r_forward,
+            r_vel_track,
+            r_heading,
+            r_joint_vel,
+            r_action_rate,
+            r_energy,
+            r_foot_spacing,
+            r_foot_height,
+        ) = compute_rewards(
             # scales
             float(self.cfg.rew_scale_alive),
             float(self.cfg.rew_scale_terminated),
@@ -242,6 +256,36 @@ class LegEnv(DirectRLEnv):
             float(self.cfg.ground_z),
             float(self.cfg.swing_z),
         )
+
+
+
+
+
+        if not hasattr(self, "extras"):
+            self.extras = {}
+
+        self.extras["episode"] = {
+            "rew_alive": r_alive.mean(),
+            "rew_termination": r_term.mean(),
+
+            "rew_upright": r_upright.mean(),
+            "rew_forward": r_forward.mean(),
+            "rew_vel_track": r_vel_track.mean(),
+            "rew_heading": r_heading.mean(),
+
+            "rew_joint_vel": r_joint_vel.mean(),
+            "rew_action_rate": r_action_rate.mean(),
+            "rew_energy": r_energy.mean(),
+
+            "rew_foot_spacing": r_foot_spacing.mean(),
+            "rew_foot_height": r_foot_height.mean(),
+
+            # 전체
+            "rew_total": total_reward.mean(),
+        }
+
+
+
 
         return total_reward
 
@@ -396,8 +440,8 @@ def compute_rewards(
     rf_z: torch.Tensor,
     ground_z:float,
     swing_z:float,
-
-) -> torch.Tensor:
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+# ) -> torch.Tensor:
 
     # Alive / termination
     alive_term = (1.0 - reset_terminated.float())
@@ -484,4 +528,17 @@ def compute_rewards(
         + rew_foot_spacing
         + rew_foot_height
     )
-    return total
+    return (
+        total,
+        rew_alive,
+        rew_termination,
+        rew_upright,
+        rew_forward,
+        rew_vel_track,
+        rew_heading,
+        rew_joint_vel,
+        rew_action_rate,
+        rew_energy,
+        rew_foot_spacing,
+        rew_foot_height,
+    )

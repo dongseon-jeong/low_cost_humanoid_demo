@@ -17,9 +17,10 @@
 - 부품
 	- 하체 다이나믹셀 XL430-W350-R x 12
 	- 상체 다이나믹셀 XL430 x 4 , 2XL430 x 4 , XL330 x 4
-	- 상체 usb rgb 카메라(or depth)
-	- opencr, u2d2, 라즈베리파이, ai hat+
-	- 리튬베터리 11v, 5v
+	- rgb 카메라
+	- opencr, u2d2, rasberrypi5, ai hat+, buck converter, dynamixel hub
+	- oculus quest2
+	- 리튬베터리 11v
 	- 나사 2 x 8, 2.5 x 8 많이 
 	- 황동 히트 인서트 2 x 2, 2.5 x 2 많이
 - skill
@@ -36,7 +37,7 @@
 
 
 # 참고
-https://github.com/ROBOTIS-GIT/ROBOTIS-OP3-Common
-https://www.robotis.com/service/downloadpage.php?ca_id=70
+https://github.com/ROBOTIS-GIT/ROBOTIS-OP3-Common  
+https://www.robotis.com/service/downloadpage.php?ca_id=70  
 https://emanual.robotis.com/docs/en/platform/op3/robotis_ros_packages/#robotis-ros-packages  
-https://www.youtube.com/watch?v=tQziqSx-F80&t=1970s
+https://www.youtube.com/watch?v=tQziqSx-F80&t=1970s  
