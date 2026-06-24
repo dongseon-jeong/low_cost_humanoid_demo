@@ -87,18 +87,19 @@ export MITSHM=0
 # 3. MoveIt 다시 로드
 roslaunch moveit_setup_assistant setup_assistant.launch
 ```
-
+curobo or cumotion  
 
 ## 오큘러스 teleoperation
 - meta setting  
 [참고](https://developers.meta.com/horizon/documentation/native/android/mobile-device-setup/)  
-- open teach 사용  
+- open teach or isaac ros teleop  
 - lerobot dataset 변환
 
 ## 합성 데이터 셋 생성
-isaacsim augmentation  
-cosmos transfer 모델로 생성  
+- isaacsim augmentation  
+- 3d gaussian splatting
+- cosmos transfer  
 
 ## vla manipulation 학습
-lerobot 학습
-
+- lerobot 학습
+- inverse dynamics model 활용

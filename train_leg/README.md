@@ -422,4 +422,4 @@ https://github.com/user-attachments/assets/5ca6f1dd-a935-40f1-bca3-d703732ec3d1
 
 
 navigation  
-
+라이다 없이 nav2 가능한지 확인?
