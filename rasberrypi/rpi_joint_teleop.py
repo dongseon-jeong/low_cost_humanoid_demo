@@ -2,7 +2,7 @@ import serial
 import time
 
 # OpenCR USB 포트 설정 (라즈베리파이 환경에 맞춰 포트명 변경 필요)
-PORT = '/dev/ttyACM1' 
+PORT = '/dev/ttyACM0' 
 BAUDRATE = 115200
 
 try:

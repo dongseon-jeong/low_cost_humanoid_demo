@@ -393,5 +393,33 @@ https://github.com/user-attachments/assets/5ca6f1dd-a935-40f1-bca3-d703732ec3d1
 
 
 강화학습모델 realworld 적용  
+학습 config파일의 엑추에이터 순서와 실제 low level 컨트롤하는 모터 순서 매칭 필요  
+```
+    actuators={
+        "legs_dxl": ImplicitActuatorCfg(
+            joint_names_expr=[
+                "lbase_joint",
+                "rbase_joint",
+                "ll1_joint",
+                "rl1_joint",
+                "ll2_joint",
+                "rl2_joint",
+                "ll3_joint",
+                "rl3_joint",
+                "ll4_joint",
+                "rl4_joint",
+                "ll5_joint",
+                "rl5_joint",
+            ],
+            stiffness={".*": 5000.0}, # 500.0
+            damping={".*": 10.0},
+            velocity_limit_sim={".*": 10.0},
+        ),
+    }
+```
+
+
+
+
 navigation  
 
