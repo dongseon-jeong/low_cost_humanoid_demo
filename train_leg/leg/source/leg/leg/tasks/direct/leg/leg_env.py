@@ -42,6 +42,14 @@ class LegEnv(DirectRLEnv):
         # State views (updated each step)
         self.joint_pos = self.robot.data.joint_pos
         self.joint_vel = self.robot.data.joint_vel
+        self.joint_nominal = (
+            self.robot.data.default_joint_pos[:, self._dof_indices]
+            .clone()
+        )
+
+        # knee 기본 굽힘
+        self.joint_nominal[:, 6] = -0.3
+        self.joint_nominal[:, 7] = 0.3
 
         # Action buffers
         self.actions = torch.zeros(self.num_envs, self._num_dofs, device=self.device)
@@ -54,14 +62,24 @@ class LegEnv(DirectRLEnv):
         self._low_count = torch.zeros(self.num_envs, dtype=torch.int32, device=self.device)
         self._tilt_count = torch.zeros(self.num_envs, dtype=torch.int32, device=self.device)
 
-        # foot body ids (exact names)
-        lf_ids, _ = self.robot.find_bodies("ll6_1")
-        rf_ids, _ = self.robot.find_bodies("rl6_1")
+        # # foot body ids (exact names)
+        # lf_ids, _ = self.robot.find_bodies("ll6_1")
+        # rf_ids, _ = self.robot.find_bodies("rl6_1")
 
-        self._lf_body_id = int(lf_ids[0])
-        self._rf_body_id = int(rf_ids[0])
+        # self._lf_body_id = int(lf_ids[0])
+        # self._rf_body_id = int(rf_ids[0])
 
         self.prev_base_pos = torch.zeros((self.num_envs, 3), device=self.device)
+
+        self.imu_bias_lin = torch.zeros(
+            (self.num_envs,3),
+            device=self.device
+        )
+
+        self.imu_bias_ang = torch.zeros(
+            (self.num_envs,3),
+            device=self.device
+        )
 
     # ---------------------------------------------------------------------
     # Scene
@@ -127,6 +145,14 @@ class LegEnv(DirectRLEnv):
         base_quat = root_state[:, 3:7]     # expected (qw,qx,qy,qz)
         base_lin_vel = root_state[:, 7:10]
         base_ang_vel = root_state[:, 10:13]
+       # =========================
+        # IMU noise simulation
+        # =========================
+
+        lin_vel_noise_std = 0.02
+        ang_vel_noise_std = 0.01
+        base_lin_vel = base_lin_vel + torch.randn_like(base_lin_vel) * lin_vel_noise_std + self.imu_bias_lin
+        base_ang_vel = base_ang_vel + torch.randn_like(base_ang_vel) * ang_vel_noise_std + self.imu_bias_ang
 
         # Prefer COM height if available
         if hasattr(self.robot.data, "root_com_pos_w"):
@@ -183,6 +209,7 @@ class LegEnv(DirectRLEnv):
         base_quat = root_state[:, 3:7]     # expected (qw,qx,qy,qz)
         base_lin_vel = root_state[:, 7:10]
         base_ang_vel = root_state[:, 10:13]
+ 
 
         # Prefer COM height if available
         if hasattr(self.robot.data, "root_com_pos_w"):
@@ -194,6 +221,7 @@ class LegEnv(DirectRLEnv):
 
         tilt_angle = compute_tilt_from_quat_wxyz(base_quat)
 
+        q = self.joint_pos[:, self._dof_indices]
         qd = self.joint_vel[:, self._dof_indices]
         action_rate = self.actions - self.last_actions
 
@@ -201,8 +229,10 @@ class LegEnv(DirectRLEnv):
         bs = self.robot.data.body_state_w
 
         # 다리사이 간격
-        lf_pos = bs[:, self._lf_body_id, 0:3]
-        rf_pos = bs[:, self._rf_body_id, 0:3]
+        lf_pos = bs[:, 10, 0:3]
+        rf_pos = bs[:, 11, 0:3]
+        # lf_pos = bs[:, self._lf_body_id, 0:3]
+        # rf_pos = bs[:, self._rf_body_id, 0:3]
 
         # 다리 높이
         lf_z = lf_pos[:,2]
@@ -224,6 +254,7 @@ class LegEnv(DirectRLEnv):
             r_energy,
             r_foot_spacing,
             r_foot_height,
+            rew_leg_pose,
         ) = compute_rewards(
             # scales
             float(self.cfg.rew_scale_alive),
@@ -235,6 +266,7 @@ class LegEnv(DirectRLEnv):
             float(self.cfg.rew_scale_energy),
             float(self.cfg.rew_vel_track_rate),
             float(self.cfg.rew_fheight_rate),
+            float(self.cfg.rew_leg_pose_rate),
 
             # robot state tensors
             base_quat,
@@ -242,9 +274,11 @@ class LegEnv(DirectRLEnv):
             base_lin_vel,
             base_height,
             tilt_angle,
+            q,
             qd,
             self.joint_torques,
             action_rate,
+            self.joint_nominal,
             float(self.cfg.base_height_target),
             self.reset_terminated,
             float(self.cfg.rew_heading_rate),
@@ -279,6 +313,7 @@ class LegEnv(DirectRLEnv):
 
             "rew_foot_spacing": r_foot_spacing.mean(),
             "rew_foot_height": r_foot_height.mean(),
+            "rew_leg_pose": rew_leg_pose.mean(),
 
             # 전체
             "rew_total": total_reward.mean(),
@@ -366,6 +401,14 @@ class LegEnv(DirectRLEnv):
 
         self.prev_base_pos[env_ids] = self.robot.data.root_state_w[env_ids, 0:3]
 
+        self.imu_bias_lin[env_ids] = (
+            torch.randn((len(env_ids),3),device=self.device)*0.01
+        )
+
+        self.imu_bias_ang[env_ids] = (
+            torch.randn((len(env_ids),3),device=self.device)*0.005
+        )
+
 # =============================================================================
 # Helpers (TorchScript-safe where it matters)
 # =============================================================================
@@ -418,6 +461,7 @@ def compute_rewards(
     rew_scale_energy: float,
     rew_vel_track_rate: float,
     rew_fheight_rate: float,
+    rew_leg_pose_rate: float,
 
     # robot state
     base_quat: torch.Tensor,            # [N,4] (qw,qx,qy,qz)
@@ -425,9 +469,11 @@ def compute_rewards(
     base_lin_vel: torch.Tensor,         # [N,3]
     base_height: torch.Tensor,          # [N]
     tilt_angle: torch.Tensor,           # [N]
-    joint_vel: torch.Tensor,            # [N,D]
-    joint_torques: torch.Tensor,        # [N,D]
-    action_rate: torch.Tensor,          # [N,D]
+    joint_pos: torch.Tensor,
+    joint_vel: torch.Tensor,
+    joint_torques: torch.Tensor,
+    action_rate: torch.Tensor,
+    joint_nominal: torch.Tensor,        # [N,D]
     base_height_target: float,
     reset_terminated: torch.Tensor,     # [N] bool/int
     rew_heading_rate:float,
@@ -440,7 +486,7 @@ def compute_rewards(
     rf_z: torch.Tensor,
     ground_z:float,
     swing_z:float,
-) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
 # ) -> torch.Tensor:
 
     # Alive / termination
@@ -498,6 +544,17 @@ def compute_rewards(
     rew_action_rate = rew_scale_action_rate * torch.sum(action_rate * action_rate, dim=1)
     rew_energy = rew_scale_energy * torch.sum(torch.abs(joint_torques * joint_vel), dim=1)
 
+    # ==========================
+    # Straight leg penalty
+    # ==========================
+
+    leg_error = joint_pos - joint_nominal
+
+    rew_leg_pose = (
+        rew_leg_pose_rate *
+        torch.sum(leg_error * leg_error, dim=1)
+    )
+
     # 발 너비
     foot_width = torch.abs(lf_pos[:, 1] - rf_pos[:, 1])
     width_err = foot_width - foot_target_width
@@ -527,6 +584,7 @@ def compute_rewards(
         + rew_energy
         + rew_foot_spacing
         + rew_foot_height
+        + rew_leg_pose
     )
     return (
         total,
@@ -541,4 +599,5 @@ def compute_rewards(
         rew_energy,
         rew_foot_spacing,
         rew_foot_height,
+        rew_leg_pose
     )

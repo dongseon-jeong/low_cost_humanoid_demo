@@ -1,0 +1,135 @@
+humanoid_urdf_controller:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers --------------------------------------
+  lgripper_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lgripper_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lgrip_fin2_slider_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lgrip_fin2_slider
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lgrip_fin1_slider_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lgrip_fin1_slider
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lshd_yaw_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lshd_yaw_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lwrist_pitch_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lwrist_pitch_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lwrist_yaw_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lwrist_yaw_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rwrist_pitch_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rwrist_pitch_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rwrist_yaw_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rwrist_yaw_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rgripper_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rgripper_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rgrip_fin1_slider_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rgrip_fin1_slider
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rgrip_fin2_slider_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rgrip_fin2_slider
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rshd_pitch_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rshd_pitch_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lshd_pitch_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lshd_pitch_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  neck_roll_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: neck_roll_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  neck_pitch_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: neck_pitch_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lbase_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lbase_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  ll1_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: ll1_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rbase_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rbase_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rl3_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rl3_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rl5_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rl5_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  ll2_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: ll2_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  ll3_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: ll3_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  ll5_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: ll5_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rl1_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rl1_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rl2_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rl2_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lshd_roll_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lshd_roll_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  lelbow_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: lelbow_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rshd_roll_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rshd_roll_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  relbow_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: relbow_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  ll4_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: ll4_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rl4_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rl4_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  rshd_yaw_joint_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: rshd_yaw_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}

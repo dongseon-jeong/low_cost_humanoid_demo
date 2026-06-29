@@ -56,23 +56,24 @@ class LegEnvCfg(DirectRLEnvCfg):
     max_base_roll = 1.0
 
     # reward scales
-    rew_scale_alive = 0.5      # 1.0 너무 크지 않게, 그래도 살아있으면 + 보상
+    rew_scale_alive = 0.1      # 1.0 너무 크지 않게, 그래도 살아있으면 + 보상
     rew_scale_terminated = -5.0     # 넘어지면 꽤 큰 음수
-    rew_scale_upright = 3.0         # 3 자세 잘 유지하면 꽤 보상
-    rew_scale_forward_vel = 25.0     # 앞으로 가면 많이 보상
+    rew_scale_upright = 1.0         # 3 자세 잘 유지하면 꽤 보상
+    rew_scale_forward_vel = 15.0     # 앞으로 가면 많이 보상
     rew_vel_track_rate = 10.0 # 5 속도 증가
+    rew_heading_rate = 0.5   # 5~20
 
     # penalties는 일단 아주 약하게 시작
-    rew_scale_joint_vel = -1e-4
-    rew_scale_action_rate = -1e-4
-    rew_scale_energy = -0.0005          # 처음엔 꺼버려도 됨
-    rew_heading_rate = 5.0   # 5~20
+    rew_scale_joint_vel = -0.01
+    rew_scale_action_rate = -0.1
+    rew_scale_energy = -0.5          # 처음엔 꺼버려도 됨
+    rew_leg_pose_rate = -0.5
 
     # 스텝용
     foot_target_width = 0.03
     ground_z = 0.01
     swing_z = 0.08
-    rew_fheight_rate = 1.0
+    rew_fheight_rate = 0.5
 
     # ---- 접촉 센서는 미사용
     GROUND_FILTER = ["/World/GroundPlane/GroundPlane/CollisionPlane"]

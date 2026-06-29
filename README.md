@@ -23,11 +23,13 @@
 	- 리튬베터리 11v
 	- 나사 2 x 8, 2.5 x 8 많이 
 	- 황동 히트 인서트 2 x 2, 2.5 x 2 많이
-- skill
-	- ros1 noetic/ros2 humble
-	- lerobot
-	- isaacsim/isaaclab
-	- fusion
+- system
+  - edge inference : rasberrypi5(opencr) heilo8G devian venv ros noetic
+  - simulation : rtx3080 desktop window11 cuda12.8 isaacsim ros2 humble
+  - train : ascent gx10 128G ubuntu cuda13
+    - lerobot venv
+    - isaaclab conda
+
 
 ![이미지](./image/210311.png)
 
@@ -41,3 +43,5 @@ https://github.com/ROBOTIS-GIT/ROBOTIS-OP3-Common
 https://www.robotis.com/service/downloadpage.php?ca_id=70  
 https://emanual.robotis.com/docs/en/platform/op3/robotis_ros_packages/#robotis-ros-packages  
 https://www.youtube.com/watch?v=tQziqSx-F80&t=1970s  
+https://github.com/kscalelabs/ksim-gym/tree/master  
+https://github.com/hshi74/toddlerbot  

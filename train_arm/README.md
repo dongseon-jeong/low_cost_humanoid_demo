@@ -73,20 +73,26 @@ isaacsim import하여 damping, stifness 등 점검
 
 moveit
 ```bash
-apt update
-apt install -y ros-noetic-moveit ros-noetic-moveit-visual-tools
+wsl -d Ubuntu-20.04
+sudo apt update
+sudo apt install -y ros-noetic-moveit ros-noetic-moveit-visual-tools
+sudo apt install python3-empy
 
-# 1. WSL 하드웨어 그래픽 가속 무력화
-export LIBGL_ALWAYS_SOFTWARE=1
-export GALLIUM_DRIVER=softpipe
+source /opt/ros/noetic/setup.bash
+cd /mnt/d/making/dynamixel/rasberrypi/catkin_ws
+# catkin_make # conda deactivate
 
-# 2. X11 공유 메모리 에러 차단
-export QT_X11_NO_MITSHM=1
-export MITSHM=0
+source devel/setup.bash
+# MoveIt 로드
 
-# 3. MoveIt 다시 로드
+OGRE_RTT_MODE=Copy \
+LIBGL_ALWAYS_SOFTWARE=1 \
+GALLIUM_DRIVER=llvmpipe \
+QT_X11_NO_MITSHM=1 \
 roslaunch moveit_setup_assistant setup_assistant.launch
 ```
+![이미지](../image/213922.png)
+
 curobo or cumotion  
 
 ## 오큘러스 teleoperation
@@ -96,10 +102,9 @@ curobo or cumotion
 - lerobot dataset 변환
 
 ## 합성 데이터 셋 생성
-- isaacsim augmentation  
-- 3d gaussian splatting
-- cosmos transfer  
+- isaacsim augmentation + 3d gaussian splatting  
+- cosmos transfer + inverse dynamics model 활용  
 
 ## vla manipulation 학습
 - lerobot 학습
-- inverse dynamics model 활용
+

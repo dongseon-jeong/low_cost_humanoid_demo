@@ -1,8 +1,8 @@
-leg/logs/*
-leg/outputs/*
-leg/.vscode
-catkin_ws/build/
-catkin_ws/devel/
-catkin_ws/src/CMakeLists.txt
-catkin_ws/.catkin_workspace
+train_leg/leg/logs/*
+train_leg/leg/outputs/*
+train_leg/leg/.vscode
+rasberrypi/catkin_ws/build/
+rasberrypi/catkin_ws/devel/
+rasberrypi/catkin_ws/src/CMakeLists.txt
+rasberrypi/catkin_ws/.catkin_workspace
 *.pt

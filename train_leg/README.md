@@ -390,7 +390,7 @@ zmp
 venv에서 zmp_walk.py 실행  
 https://github.com/user-attachments/assets/5ca6f1dd-a935-40f1-bca3-d703732ec3d1
 
-
+[참고](https://ieeexplore.ieee.org/document/4209488)
 
 강화학습모델 realworld 적용  
 학습 config파일의 엑추에이터 순서와 실제 low level 컨트롤하는 모터 순서 매칭 필요  
