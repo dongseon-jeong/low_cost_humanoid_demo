@@ -24,7 +24,7 @@
 	- 나사 2 x 8, 2.5 x 8 많이 
 	- 황동 히트 인서트 2 x 2, 2.5 x 2 많이
 - system
-  - edge inference : rasberrypi5(opencr) heilo8G devian venv ros noetic
+  - edge inference : rasberrypi5(opencr) hailo8G debian venv ros noetic
   - simulation : rtx3080 desktop window11 cuda12.8 isaacsim ros2 humble
   - train : ascent gx10 128G ubuntu cuda13
     - lerobot venv
